@@ -1,7 +1,8 @@
 "Asm.fif" include
-// automatically generated from `common/stdlib.fc` `params.fc` `op-codes.fc` `jetton-utils.fc` `jetton-wallet.fc` 
+// automatically generated from `common/stdlib.fc` `common/chains.fc` `common/op-codes.fc` `common/packers.fc` `jetton-wallet.fc` 
 PROGRAM{
   DECLPROC force_chain
+  DECLPROC is_resolvable?
   DECLPROC pack_jetton_wallet_data
   DECLPROC calculate_jetton_wallet_state_init
   DECLPROC calculate_jetton_wallet_address
@@ -21,6 +22,13 @@ PROGRAM{
     0 PUSHINT	//  wc _5
     EQUAL	//  _6
     333 THROWIFNOT
+  }>
+  is_resolvable? PROCINLINE:<{
+    //  addr
+    REWRITESTDADDR	//  _6 _7
+    DROP	//  wc
+    0 PUSHINT	//  wc _4
+    EQUAL	//  _5
   }>
   pack_jetton_wallet_data PROCINLINE:<{
     //  balance owner_address jetton_master_address jetton_wallet_code
