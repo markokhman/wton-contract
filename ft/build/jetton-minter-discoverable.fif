@@ -1,5 +1,5 @@
 "Asm.fif" include
-// automatically generated from `../stdlib.fc` `params.fc` `op-codes.fc` `discovery-params.fc` `jetton-utils.fc` `jetton-minter-discoverable.fc` 
+// automatically generated from `common/stdlib.fc` `params.fc` `op-codes.fc` `discovery-params.fc` `jetton-utils.fc` `jetton-minter-discoverable.fc` 
 PROGRAM{
   DECLPROC force_chain
   DECLPROC is_resolvable?
