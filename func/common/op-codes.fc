@@ -5,12 +5,13 @@ int op::excesses() asm "0xd53276db PUSHINT";
 int op::burn() asm "0x595f07bc PUSHINT";
 int op::burn_notification() asm "0x7bdd97de PUSHINT";
 
-;; Minter
-int op::mint() asm "21 PUSHINT";
-
 ;; Discovery Minter
 int op::provide_wallet_address() asm "0x2c76b973 PUSHINT";
 int op::take_wallet_address() asm "0xd1735400 PUSHINT";
+
+;; Wrapped TON
+int op::mint() asm "0xc82e300c PUSHINT";
+int op::release() asm "0x71c6af6b PUSHINT";
 
 int is_resolvable?(slice addr) inline {
     (int wc, _) = parse_std_addr(addr);
