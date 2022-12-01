@@ -78,7 +78,7 @@ take_wallet_address#d1735400 query_id:uint64 wallet_address:MsgAddress
 // TEP-xx - WTON (Wrapped TON)
 //
 
-mint#c82e300c query_id:uint64 amount:Coins recipient:MsgAddress custom_payload:(Maybe ^Cell)
-              response_destination:MsgAddress = InternalMsgBody;
+mint#cab9fcfb query_id:uint64 amount:Coins recipient:MsgAddress forward_amount:Coins
+              forward_payload:(Maybe ^Cell) response_destination:MsgAddress = InternalMsgBody;
 
 release#71c6af6b query_id:uint64 custom_payload:(Maybe ^Cell) = InternalMsgBody;

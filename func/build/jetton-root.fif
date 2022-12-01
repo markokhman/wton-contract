@@ -135,54 +135,60 @@ PROGRAM{
       3 BLKDROP	// 
     }>	//  msg_value in_msg_body cs
     LDMSGADDR	//  msg_value in_msg_body sender_address cs
-    LDMSGADDR	//  msg_value in_msg_body sender_address _205 _204
+    LDMSGADDR	//  msg_value in_msg_body sender_address _212 _211
     NIP	//  msg_value in_msg_body sender_address cs
-    LDVARUINT16	//  msg_value in_msg_body sender_address _207 _206
+    LDVARUINT16	//  msg_value in_msg_body sender_address _214 _213
     NIP	//  msg_value in_msg_body sender_address cs
     1 PUSHINT	//  msg_value in_msg_body sender_address cs _20=1
     SDSKIPFIRST	//  msg_value in_msg_body sender_address cs
-    LDVARUINT16	//  msg_value in_msg_body sender_address _209 _208
+    LDVARUINT16	//  msg_value in_msg_body sender_address _216 _215
     NIP	//  msg_value in_msg_body sender_address cs
-    LDVARUINT16	//  msg_value in_msg_body sender_address _211 _210
+    LDVARUINT16	//  msg_value in_msg_body sender_address _218 _217
     DROP	//  msg_value in_msg_body sender_address fwd_fee
     s0 s2 XCHG	//  msg_value fwd_fee sender_address in_msg_body
     32 LDU	//  msg_value fwd_fee sender_address op in_msg_body
     64 LDU	//  msg_value fwd_fee sender_address op query_id in_msg_body
     load_data INLINECALLDICT	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code
-    21 PUSHINT	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code _40
+    0xcab9fcfb PUSHINT	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code _40
     s7 s(-1) PUXC	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code op _40
     EQUAL	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code _41
     IFJMP:<{	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code
-      s5 POP
-      s5 POP
       s6 POP
-      s6 POP	//  total_supply admin_address sender_address content jetton_wallet_code in_msg_body
-      s3 s4 XCPU	//  total_supply admin_address in_msg_body content jetton_wallet_code sender_address admin_address
-      SDEQ	//  total_supply admin_address in_msg_body content jetton_wallet_code _43
-      73 THROWIFNOT
-      s0 s2 XCHG	//  total_supply admin_address jetton_wallet_code content in_msg_body
-      LDMSGADDR	//  total_supply admin_address jetton_wallet_code content to_address in_msg_body
-      LDVARUINT16	//  total_supply admin_address jetton_wallet_code content to_address amount in_msg_body
-      LDREF	//  total_supply admin_address jetton_wallet_code content to_address amount _225 _224
-      DROP	//  total_supply admin_address jetton_wallet_code content to_address amount master_msg
-      DUP	//  total_supply admin_address jetton_wallet_code content to_address amount master_msg master_msg
-      CTOS	//  total_supply admin_address jetton_wallet_code content to_address amount master_msg master_msg_cs
-      96 PUSHINT	//  total_supply admin_address jetton_wallet_code content to_address amount master_msg master_msg_cs _59
-      SDSKIPFIRST	//  total_supply admin_address jetton_wallet_code content to_address amount master_msg master_msg_cs
-      LDVARUINT16	//  total_supply admin_address jetton_wallet_code content to_address amount master_msg _227 _226
-      DROP	//  total_supply admin_address jetton_wallet_code content to_address amount master_msg jetton_amount
-      s5 PUSH
-      s3 s4 XCHG
-      s4 s2 XCHG2	//  total_supply admin_address jetton_wallet_code content jetton_amount to_address jetton_wallet_code amount master_msg
+      s7 POP
+      s7 POP	//  admin_address content sender_address jetton_wallet_code query_id in_msg_body total_supply
+      SWAP	//  admin_address content sender_address jetton_wallet_code query_id total_supply in_msg_body
+      LDVARUINT16	//  admin_address content sender_address jetton_wallet_code query_id total_supply amount in_msg_body
+      LDMSGADDR	//  admin_address content sender_address jetton_wallet_code query_id total_supply amount recipient in_msg_body
+      LDVARUINT16	//  admin_address content sender_address jetton_wallet_code query_id total_supply amount recipient forward_amount in_msg_body
+      LDDICT	//  admin_address content sender_address jetton_wallet_code query_id total_supply amount recipient forward_amount _234 _233
+      DROP	//  admin_address content sender_address jetton_wallet_code query_id total_supply amount recipient forward_amount forward_payload
+      0x178d4519 PUSHINT	//  admin_address content sender_address jetton_wallet_code query_id total_supply amount recipient forward_amount forward_payload _58
+      NEWC	//  admin_address content sender_address jetton_wallet_code query_id total_supply amount recipient forward_amount forward_payload _58 _59
+      32 STU	//  admin_address content sender_address jetton_wallet_code query_id total_supply amount recipient forward_amount forward_payload _61
+      s1 s6 XCHG	//  admin_address content sender_address jetton_wallet_code forward_payload total_supply amount recipient forward_amount query_id _61
+      64 STU	//  admin_address content sender_address jetton_wallet_code forward_payload total_supply amount recipient forward_amount _63
+      s3 PUSH	//  admin_address content sender_address jetton_wallet_code forward_payload total_supply amount recipient forward_amount _63 amount
+      STVARUINT16	//  admin_address content sender_address jetton_wallet_code forward_payload total_supply amount recipient forward_amount _64
+      MYADDR	//  admin_address content sender_address jetton_wallet_code forward_payload total_supply amount recipient forward_amount _64 _65
+      STSLICER	//  admin_address content sender_address jetton_wallet_code forward_payload total_supply amount recipient forward_amount _66
+      ROT	//  admin_address content sender_address jetton_wallet_code forward_payload total_supply amount forward_amount _66 recipient
+      STSLICER	//  admin_address content sender_address jetton_wallet_code forward_payload total_supply amount forward_amount _67
+      SWAP	//  admin_address content sender_address jetton_wallet_code forward_payload total_supply amount _67 forward_amount
+      STVARUINT16	//  admin_address content sender_address jetton_wallet_code forward_payload total_supply amount _68
+      s1 s3 XCHG	//  admin_address content sender_address jetton_wallet_code amount total_supply forward_payload _68
+      STDICT	//  admin_address content sender_address jetton_wallet_code amount total_supply _69
+      ENDC	//  admin_address content sender_address jetton_wallet_code amount total_supply master_msg
+      s4 s3 s(-1) XCPUXC
+      s3 s(-1) PUXC	//  admin_address content total_supply jetton_wallet_code amount sender_address jetton_wallet_code amount master_msg
       mint_tokens CALLDICT
-      s1 s4 XCHG	//  content admin_address jetton_wallet_code total_supply jetton_amount
-      ADD	//  content admin_address jetton_wallet_code _65
-      s3 s3 XCHG2	//  _65 admin_address content jetton_wallet_code
+      s1 s2 XCHG	//  admin_address content jetton_wallet_code total_supply amount
+      ADD	//  admin_address content jetton_wallet_code _72
+      3 -ROLL	//  _72 admin_address content jetton_wallet_code
       save_data INLINECALLDICT
     }>	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code
-    0x7bdd97de PUSHINT	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code _67
-    s7 s(-1) PUXC	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code op _67
-    EQUAL	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code _68
+    0x7bdd97de PUSHINT	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code _74
+    s7 s(-1) PUXC	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code op _74
+    EQUAL	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code _75
     IFJMP:<{	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code
       s6 POP
       s7 POP
@@ -190,130 +196,130 @@ PROGRAM{
       SWAP	//  admin_address content sender_address jetton_wallet_code query_id total_supply in_msg_body
       LDVARUINT16	//  admin_address content sender_address jetton_wallet_code query_id total_supply jetton_amount in_msg_body
       LDMSGADDR	//  admin_address content sender_address jetton_wallet_code query_id total_supply jetton_amount from_address in_msg_body
-      MYADDR	//  admin_address content sender_address jetton_wallet_code query_id total_supply jetton_amount from_address in_msg_body _76
-      s2 s0 s6 XC2PU	//  admin_address content sender_address jetton_wallet_code query_id total_supply jetton_amount in_msg_body from_address _76 jetton_wallet_code
-      calculate_user_jetton_wallet_address INLINECALLDICT	//  admin_address content sender_address jetton_wallet_code query_id total_supply jetton_amount in_msg_body _77
-      s0 s6 XCHG2	//  admin_address content in_msg_body jetton_wallet_code query_id total_supply jetton_amount _77 sender_address
-      SDEQ	//  admin_address content in_msg_body jetton_wallet_code query_id total_supply jetton_amount _78
+      MYADDR	//  admin_address content sender_address jetton_wallet_code query_id total_supply jetton_amount from_address in_msg_body _83
+      s2 s0 s6 XC2PU	//  admin_address content sender_address jetton_wallet_code query_id total_supply jetton_amount in_msg_body from_address _83 jetton_wallet_code
+      calculate_user_jetton_wallet_address INLINECALLDICT	//  admin_address content sender_address jetton_wallet_code query_id total_supply jetton_amount in_msg_body _84
+      s0 s6 XCHG2	//  admin_address content in_msg_body jetton_wallet_code query_id total_supply jetton_amount _84 sender_address
+      SDEQ	//  admin_address content in_msg_body jetton_wallet_code query_id total_supply jetton_amount _85
       74 THROWIFNOT
-      SUB	//  admin_address content in_msg_body jetton_wallet_code query_id _80
+      SUB	//  admin_address content in_msg_body jetton_wallet_code query_id _87
       s0 s3 XCHG
-      s5 s4 s5 XCHG3	//  in_msg_body query_id _80 admin_address content jetton_wallet_code
+      s5 s4 s5 XCHG3	//  in_msg_body query_id _87 admin_address content jetton_wallet_code
       save_data INLINECALLDICT
       SWAP	//  query_id in_msg_body
-      LDMSGADDR	//  query_id _233 _232
+      LDMSGADDR	//  query_id _242 _241
       DROP	//  query_id response_address
       DUP	//  query_id response_address response_address
-      2 PLDU	//  query_id response_address _86
-      0 NEQINT	//  query_id response_address _88
+      2 PLDU	//  query_id response_address _93
+      0 NEQINT	//  query_id response_address _95
       IF:<{	//  query_id response_address
-        0xd53276db PUSHINT	//  query_id response_address _90
-        0 PUSHINT	//  query_id response_address _90 _91=0
-        16 PUSHINT	//  query_id response_address _90 _91=0 _92=16
-        NEWC	//  query_id response_address _90 _91=0 _92=16 _93
-        6 STU	//  query_id response_address _90 _91=0 _95
-        s0 s3 XCHG2	//  query_id _91=0 _90 _95 response_address
-        STSLICER	//  query_id _91=0 _90 _96
-        s2 PUSH	//  query_id _91=0 _90 _96 _97=0
-        STVARUINT16	//  query_id _91=0 _90 _98
-        s1 s2 XCHG	//  query_id _90 _91=0 _98
-        107 STU	//  query_id _90 _112
-        32 STU	//  query_id _114
+        0xd53276db PUSHINT	//  query_id response_address _97
+        0 PUSHINT	//  query_id response_address _97 _98=0
+        16 PUSHINT	//  query_id response_address _97 _98=0 _99=16
+        NEWC	//  query_id response_address _97 _98=0 _99=16 _100
+        6 STU	//  query_id response_address _97 _98=0 _102
+        s0 s3 XCHG2	//  query_id _98=0 _97 _102 response_address
+        STSLICER	//  query_id _98=0 _97 _103
+        s2 PUSH	//  query_id _98=0 _97 _103 _104=0
+        STVARUINT16	//  query_id _98=0 _97 _105
+        s1 s2 XCHG	//  query_id _97 _98=0 _105
+        107 STU	//  query_id _97 _119
+        32 STU	//  query_id _121
         64 STU	//  msg
-        ENDC	//  _117
-        66 PUSHINT	//  _117 _120
+        ENDC	//  _124
+        66 PUSHINT	//  _124 _127
         SENDRAWMSG
       }>ELSE<{
         2DROP	// 
       }>
     }>	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code
-    0x2c76b973 PUSHINT	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code _122
-    s7 s(-1) PUXC	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code op _122
-    EQUAL	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code _123
+    0x2c76b973 PUSHINT	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code _129
+    s7 s(-1) PUXC	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code op _129
+    EQUAL	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code _130
     IFJMP:<{	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code
       s6 POP
       3 BLKDROP	//  msg_value fwd_fee sender_address jetton_wallet_code query_id in_msg_body
-      10000000 PUSHINT	//  msg_value fwd_fee sender_address jetton_wallet_code query_id in_msg_body _125
-      s1 s5 XCHG	//  msg_value in_msg_body sender_address jetton_wallet_code query_id fwd_fee _125
-      ADD	//  msg_value in_msg_body sender_address jetton_wallet_code query_id _126
-      s1 s5 XCHG	//  query_id in_msg_body sender_address jetton_wallet_code msg_value _126
-      GREATER	//  query_id in_msg_body sender_address jetton_wallet_code _127
+      10000000 PUSHINT	//  msg_value fwd_fee sender_address jetton_wallet_code query_id in_msg_body _132
+      s1 s5 XCHG	//  msg_value in_msg_body sender_address jetton_wallet_code query_id fwd_fee _132
+      ADD	//  msg_value in_msg_body sender_address jetton_wallet_code query_id _133
+      s1 s5 XCHG	//  query_id in_msg_body sender_address jetton_wallet_code msg_value _133
+      GREATER	//  query_id in_msg_body sender_address jetton_wallet_code _134
       75 THROWIFNOT
       s0 s2 XCHG	//  query_id jetton_wallet_code sender_address in_msg_body
       LDMSGADDR	//  query_id jetton_wallet_code sender_address owner_address in_msg_body
-      1 LDU	//  query_id jetton_wallet_code sender_address owner_address _237 _236
+      1 LDU	//  query_id jetton_wallet_code sender_address owner_address _246 _245
       DROP	//  query_id jetton_wallet_code sender_address owner_address include_address?
       IF:<{	//  query_id jetton_wallet_code sender_address owner_address
-        NEWC	//  query_id jetton_wallet_code sender_address owner_address _138
-        OVER	//  query_id jetton_wallet_code sender_address owner_address _138 owner_address
-        STSLICER	//  query_id jetton_wallet_code sender_address owner_address _139
-        ENDC	//  query_id jetton_wallet_code sender_address owner_address _137
+        NEWC	//  query_id jetton_wallet_code sender_address owner_address _145
+        OVER	//  query_id jetton_wallet_code sender_address owner_address _145 owner_address
+        STSLICER	//  query_id jetton_wallet_code sender_address owner_address _146
+        ENDC	//  query_id jetton_wallet_code sender_address owner_address _144
       }>ELSE<{	//  query_id jetton_wallet_code sender_address owner_address
-        PUSHNULL	//  query_id jetton_wallet_code sender_address owner_address _137
+        PUSHNULL	//  query_id jetton_wallet_code sender_address owner_address _144
       }>	//  query_id jetton_wallet_code sender_address owner_address included_address
-      0xd1735400 PUSHINT	//  query_id jetton_wallet_code sender_address owner_address included_address _143
-      0 PUSHINT	//  query_id jetton_wallet_code sender_address owner_address included_address _143 _144=0
-      24 PUSHINT	//  query_id jetton_wallet_code sender_address owner_address included_address _143 _144=0 _145=24
-      NEWC	//  query_id jetton_wallet_code sender_address owner_address included_address _143 _144=0 _145=24 _146
-      6 STU	//  query_id jetton_wallet_code sender_address owner_address included_address _143 _144=0 _148
-      s0 s5 XCHG2	//  query_id jetton_wallet_code _144=0 owner_address included_address _143 _148 sender_address
-      STSLICER	//  query_id jetton_wallet_code _144=0 owner_address included_address _143 _149
-      s4 PUSH	//  query_id jetton_wallet_code _144=0 owner_address included_address _143 _149 _150=0
-      STVARUINT16	//  query_id jetton_wallet_code _144=0 owner_address included_address _143 _151
-      s1 s4 XCHG	//  query_id jetton_wallet_code _143 owner_address included_address _144=0 _151
-      107 STU	//  query_id jetton_wallet_code _143 owner_address included_address _165
-      s1 s3 XCHG	//  query_id jetton_wallet_code included_address owner_address _143 _165
-      32 STU	//  query_id jetton_wallet_code included_address owner_address _167
-      s1 s4 XCHG	//  owner_address jetton_wallet_code included_address query_id _167
+      0xd1735400 PUSHINT	//  query_id jetton_wallet_code sender_address owner_address included_address _150
+      0 PUSHINT	//  query_id jetton_wallet_code sender_address owner_address included_address _150 _151=0
+      24 PUSHINT	//  query_id jetton_wallet_code sender_address owner_address included_address _150 _151=0 _152=24
+      NEWC	//  query_id jetton_wallet_code sender_address owner_address included_address _150 _151=0 _152=24 _153
+      6 STU	//  query_id jetton_wallet_code sender_address owner_address included_address _150 _151=0 _155
+      s0 s5 XCHG2	//  query_id jetton_wallet_code _151=0 owner_address included_address _150 _155 sender_address
+      STSLICER	//  query_id jetton_wallet_code _151=0 owner_address included_address _150 _156
+      s4 PUSH	//  query_id jetton_wallet_code _151=0 owner_address included_address _150 _156 _157=0
+      STVARUINT16	//  query_id jetton_wallet_code _151=0 owner_address included_address _150 _158
+      s1 s4 XCHG	//  query_id jetton_wallet_code _150 owner_address included_address _151=0 _158
+      107 STU	//  query_id jetton_wallet_code _150 owner_address included_address _172
+      s1 s3 XCHG	//  query_id jetton_wallet_code included_address owner_address _150 _172
+      32 STU	//  query_id jetton_wallet_code included_address owner_address _174
+      s1 s4 XCHG	//  owner_address jetton_wallet_code included_address query_id _174
       64 STU	//  owner_address jetton_wallet_code included_address msg
       s3 PUSH	//  owner_address jetton_wallet_code included_address msg owner_address
-      is_resolvable? INLINECALLDICT	//  owner_address jetton_wallet_code included_address msg _170
+      is_resolvable? INLINECALLDICT	//  owner_address jetton_wallet_code included_address msg _177
       IF:<{	//  owner_address jetton_wallet_code included_address msg
-        MYADDR	//  owner_address jetton_wallet_code included_address msg _171
-        s4 s0 s3 XCHG3	//  included_address msg owner_address _171 jetton_wallet_code
-        calculate_user_jetton_wallet_address INLINECALLDICT	//  included_address msg _172
+        MYADDR	//  owner_address jetton_wallet_code included_address msg _178
+        s4 s0 s3 XCHG3	//  included_address msg owner_address _178 jetton_wallet_code
+        calculate_user_jetton_wallet_address INLINECALLDICT	//  included_address msg _179
         STSLICER	//  included_address msg
       }>ELSE<{	//  owner_address jetton_wallet_code included_address msg
         2 2 BLKDROP2	//  included_address msg
-        0 PUSHINT	//  included_address msg _174=0
-        SWAP	//  included_address _174=0 msg
+        0 PUSHINT	//  included_address msg _181=0
+        SWAP	//  included_address _181=0 msg
         2 STU	//  included_address msg
       }>
-      STOPTREF	//  _177
-      ENDC	//  _178
-      64 PUSHINT	//  _178 _179=64
+      STOPTREF	//  _184
+      ENDC	//  _185
+      64 PUSHINT	//  _185 _186=64
       SENDRAWMSG
     }>	//  msg_value fwd_fee sender_address op query_id in_msg_body total_supply admin_address content jetton_wallet_code
     s5 POP
     s7 POP
     s7 POP	//  admin_address content sender_address op jetton_wallet_code in_msg_body total_supply
     s3 PUSH	//  admin_address content sender_address op jetton_wallet_code in_msg_body total_supply op
-    3 EQINT	//  admin_address content sender_address op jetton_wallet_code in_msg_body total_supply _182
+    3 EQINT	//  admin_address content sender_address op jetton_wallet_code in_msg_body total_supply _189
     IFJMP:<{	//  admin_address content sender_address op jetton_wallet_code in_msg_body total_supply
       s3 POP	//  admin_address content sender_address total_supply jetton_wallet_code in_msg_body
       s3 s5 XCHG2	//  in_msg_body content jetton_wallet_code total_supply sender_address admin_address
-      SDEQ	//  in_msg_body content jetton_wallet_code total_supply _184
+      SDEQ	//  in_msg_body content jetton_wallet_code total_supply _191
       73 THROWIFNOT
       s0 s3 XCHG	//  total_supply content jetton_wallet_code in_msg_body
-      LDMSGADDR	//  total_supply content jetton_wallet_code _239 _238
+      LDMSGADDR	//  total_supply content jetton_wallet_code _248 _247
       DROP	//  total_supply content jetton_wallet_code new_admin_address
       -ROT	//  total_supply new_admin_address content jetton_wallet_code
       save_data INLINECALLDICT
     }>	//  admin_address content sender_address op jetton_wallet_code in_msg_body total_supply
     s5 POP	//  admin_address total_supply sender_address op jetton_wallet_code in_msg_body
     s0 s2 XCHG	//  admin_address total_supply sender_address in_msg_body jetton_wallet_code op
-    4 EQINT	//  admin_address total_supply sender_address in_msg_body jetton_wallet_code _191
+    4 EQINT	//  admin_address total_supply sender_address in_msg_body jetton_wallet_code _198
     IFJMP:<{	//  admin_address total_supply sender_address in_msg_body jetton_wallet_code
       s2 s4 XCPU	//  admin_address total_supply jetton_wallet_code in_msg_body sender_address admin_address
-      SDEQ	//  admin_address total_supply jetton_wallet_code in_msg_body _193
+      SDEQ	//  admin_address total_supply jetton_wallet_code in_msg_body _200
       73 THROWIFNOT
-      LDREF	//  admin_address total_supply jetton_wallet_code _241 _240
-      DROP	//  admin_address total_supply jetton_wallet_code _195
-      s3 s0 s0 XCHG3	//  total_supply admin_address _195 jetton_wallet_code
+      LDREF	//  admin_address total_supply jetton_wallet_code _250 _249
+      DROP	//  admin_address total_supply jetton_wallet_code _202
+      s3 s0 s0 XCHG3	//  total_supply admin_address _202 jetton_wallet_code
       save_data INLINECALLDICT
     }>	//  admin_address total_supply sender_address in_msg_body jetton_wallet_code
     5 BLKDROP	// 
-    16 PUSHPOW2DEC	//  _198=65535
+    16 PUSHPOW2DEC	//  _205=65535
     THROWANY
   }>
   get_jetton_data PROC:<{

@@ -63,15 +63,26 @@ int provide_address_gas_consumption() asm "10000000 PUSHINT";
     (int total_supply, slice admin_address, cell content, cell jetton_wallet_code) = load_data();
 
     if (op == op::mint()) {
-        throw_unless(73, equal_slices(sender_address, admin_address));
-        slice to_address = in_msg_body~load_msg_addr();
         int amount = in_msg_body~load_coins();
-        cell master_msg = in_msg_body~load_ref();
-        slice master_msg_cs = master_msg.begin_parse();
-        master_msg_cs~skip_bits(32 + 64); ;; op + query_id
-        int jetton_amount = master_msg_cs~load_coins();
-        mint_tokens(to_address, jetton_wallet_code, amount, master_msg);
-        save_data(total_supply + jetton_amount, admin_address, content, jetton_wallet_code);
+        slice recipient = in_msg_body~load_msg_addr();
+        int forward_amount = in_msg_body~load_coins();
+        cell forward_payload = in_msg_body~load_dict();
+        slice response_destination = in_msg_body~load_msg_addr();
+
+;;         throw_unless(76, buy_amount > 0);
+
+        var master_msg = begin_cell()
+                .store_uint(op::internal_transfer(), 32)
+                .store_uint(query_id, 64) ;; query_id
+                .store_coins(amount)
+                .store_slice(my_address()) ;; from_address
+                .store_slice(recipient) ;; response_address
+                .store_coins(forward_amount) ;; forward_amount
+                .store_dict(forward_payload) ;; forward_payload
+                .end_cell();
+
+        mint_tokens(sender_address, jetton_wallet_code, amount, master_msg);
+        save_data(total_supply + amount, admin_address, content, jetton_wallet_code);
         return ();
     }
 

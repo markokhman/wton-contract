@@ -10,7 +10,7 @@ int op::provide_wallet_address() asm "0x2c76b973 PUSHINT";
 int op::take_wallet_address() asm "0xd1735400 PUSHINT";
 
 ;; Wrapped TON
-int op::mint() asm "0xc82e300c PUSHINT";
+int op::mint() asm "0xcab9fcfb PUSHINT";
 int op::release() asm "0x71c6af6b PUSHINT";
 
 int is_resolvable?(slice addr) inline {
