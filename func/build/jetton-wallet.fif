@@ -286,47 +286,52 @@ PROGRAM{
     s0 s7 XCHG	//  jetton_wallet_code sender_address msg_value fwd_fee balance owner_address jetton_master_address in_msg_body
     64 LDU	//  jetton_wallet_code sender_address msg_value fwd_fee balance owner_address jetton_master_address query_id in_msg_body
     LDVARUINT16	//  jetton_wallet_code sender_address msg_value fwd_fee balance owner_address jetton_master_address query_id jetton_amount in_msg_body
-    LDMSGADDR	//  jetton_wallet_code sender_address msg_value fwd_fee balance owner_address jetton_master_address query_id jetton_amount _82 _81
-    DROP	//  jetton_wallet_code sender_address msg_value fwd_fee balance owner_address jetton_master_address query_id jetton_amount response_address
-    s5 s1 XCPU	//  jetton_wallet_code sender_address msg_value fwd_fee response_address owner_address jetton_master_address query_id jetton_amount balance jetton_amount
-    SUB	//  jetton_wallet_code sender_address msg_value fwd_fee response_address owner_address jetton_master_address query_id jetton_amount balance
-    s4 s8 PUXC	//  jetton_wallet_code balance msg_value fwd_fee response_address owner_address jetton_master_address query_id jetton_amount owner_address sender_address
-    SDEQ	//  jetton_wallet_code balance msg_value fwd_fee response_address owner_address jetton_master_address query_id jetton_amount _21
+    LDMSGADDR	//  jetton_wallet_code sender_address msg_value fwd_fee balance owner_address jetton_master_address query_id jetton_amount response_address in_msg_body
+    LDOPTREF	//  jetton_wallet_code sender_address msg_value fwd_fee balance owner_address jetton_master_address query_id jetton_amount response_address _94 _93
+    DROP	//  jetton_wallet_code sender_address msg_value fwd_fee balance owner_address jetton_master_address query_id jetton_amount response_address custom_payload
+    s6 s2 XCPU	//  jetton_wallet_code sender_address msg_value fwd_fee custom_payload owner_address jetton_master_address query_id jetton_amount response_address balance jetton_amount
+    SUB	//  jetton_wallet_code sender_address msg_value fwd_fee custom_payload owner_address jetton_master_address query_id jetton_amount response_address balance
+    s5 s9 PUXC	//  jetton_wallet_code balance msg_value fwd_fee custom_payload owner_address jetton_master_address query_id jetton_amount response_address owner_address sender_address
+    SDEQ	//  jetton_wallet_code balance msg_value fwd_fee custom_payload owner_address jetton_master_address query_id jetton_amount response_address _24
     705 THROWIFNOT
-    s7 PUSH	//  jetton_wallet_code balance msg_value fwd_fee response_address owner_address jetton_master_address query_id jetton_amount balance
-    -1 GTINT	//  jetton_wallet_code balance msg_value fwd_fee response_address owner_address jetton_master_address query_id jetton_amount _25
+    s8 PUSH	//  jetton_wallet_code balance msg_value fwd_fee custom_payload owner_address jetton_master_address query_id jetton_amount response_address balance
+    -1 GTINT	//  jetton_wallet_code balance msg_value fwd_fee custom_payload owner_address jetton_master_address query_id jetton_amount response_address _28
     706 THROWIFNOT
-    10000000 PUSHINT	//  jetton_wallet_code balance msg_value fwd_fee response_address owner_address jetton_master_address query_id jetton_amount _29
-    1 LSHIFT#	//  jetton_wallet_code balance msg_value fwd_fee response_address owner_address jetton_master_address query_id jetton_amount _30
-    s1 s6 XCHG	//  jetton_wallet_code balance msg_value jetton_amount response_address owner_address jetton_master_address query_id fwd_fee _30
-    ADD	//  jetton_wallet_code balance msg_value jetton_amount response_address owner_address jetton_master_address query_id _31
-    s1 s6 XCHG	//  jetton_wallet_code balance query_id jetton_amount response_address owner_address jetton_master_address msg_value _31
-    GREATER	//  jetton_wallet_code balance query_id jetton_amount response_address owner_address jetton_master_address _32
+    s0 s6 XCHG	//  jetton_wallet_code balance msg_value response_address custom_payload owner_address jetton_master_address query_id jetton_amount fwd_fee
+    1 LSHIFT#	//  jetton_wallet_code balance msg_value response_address custom_payload owner_address jetton_master_address query_id jetton_amount _32
+    10000000 PUSHINT	//  jetton_wallet_code balance msg_value response_address custom_payload owner_address jetton_master_address query_id jetton_amount _32 _34
+    1 LSHIFT#	//  jetton_wallet_code balance msg_value response_address custom_payload owner_address jetton_master_address query_id jetton_amount _32 _35
+    ADD	//  jetton_wallet_code balance msg_value response_address custom_payload owner_address jetton_master_address query_id jetton_amount _36
+    s1 s7 XCHG	//  jetton_wallet_code balance jetton_amount response_address custom_payload owner_address jetton_master_address query_id msg_value _36
+    GREATER	//  jetton_wallet_code balance jetton_amount response_address custom_payload owner_address jetton_master_address query_id _37
     707 THROWIFNOT
-    0x7bdd97de PUSHINT	//  jetton_wallet_code balance query_id jetton_amount response_address owner_address jetton_master_address _35
-    NEWC	//  jetton_wallet_code balance query_id jetton_amount response_address owner_address jetton_master_address _35 _36
-    32 STU	//  jetton_wallet_code balance query_id jetton_amount response_address owner_address jetton_master_address _38
-    s1 s5 XCHG	//  jetton_wallet_code balance jetton_master_address jetton_amount response_address owner_address query_id _38
-    64 STU	//  jetton_wallet_code balance jetton_master_address jetton_amount response_address owner_address _40
-    s0 s3 XCHG2	//  jetton_wallet_code balance jetton_master_address owner_address response_address _40 jetton_amount
-    STVARUINT16	//  jetton_wallet_code balance jetton_master_address owner_address response_address _41
-    s2 PUSH	//  jetton_wallet_code balance jetton_master_address owner_address response_address _41 owner_address
-    STSLICER	//  jetton_wallet_code balance jetton_master_address owner_address response_address _42
-    SWAP	//  jetton_wallet_code balance jetton_master_address owner_address _42 response_address
-    STSLICER	//  jetton_wallet_code balance jetton_master_address owner_address _43
-    ENDC	//  jetton_wallet_code balance jetton_master_address owner_address msg_body
-    1 PUSHINT	//  jetton_wallet_code balance jetton_master_address owner_address msg_body _46=1
-    24 PUSHINT	//  jetton_wallet_code balance jetton_master_address owner_address msg_body _46=1 _47=24
-    NEWC	//  jetton_wallet_code balance jetton_master_address owner_address msg_body _46=1 _47=24 _48
-    6 STU	//  jetton_wallet_code balance jetton_master_address owner_address msg_body _46=1 _50
-    s4 PUSH	//  jetton_wallet_code balance jetton_master_address owner_address msg_body _46=1 _50 jetton_master_address
-    STSLICER	//  jetton_wallet_code balance jetton_master_address owner_address msg_body _46=1 _51
-    0 PUSHINT	//  jetton_wallet_code balance jetton_master_address owner_address msg_body _46=1 _51 _52=0
-    STVARUINT16	//  jetton_wallet_code balance jetton_master_address owner_address msg_body _46=1 _53
-    107 STU	//  jetton_wallet_code balance jetton_master_address owner_address msg_body _67
-    STREF	//  jetton_wallet_code balance jetton_master_address owner_address msg
-    ENDC	//  jetton_wallet_code balance jetton_master_address owner_address _69
-    64 PUSHINT	//  jetton_wallet_code balance jetton_master_address owner_address _69 _70=64
+    s4 PUSH	//  jetton_wallet_code balance jetton_amount response_address custom_payload owner_address jetton_master_address query_id response_address
+    2 PLDU	//  jetton_wallet_code balance jetton_amount response_address custom_payload owner_address jetton_master_address query_id _41
+    710 THROWIFNOT
+    0x84106950 PUSHINT	//  jetton_wallet_code balance jetton_amount response_address custom_payload owner_address jetton_master_address query_id _44
+    NEWC	//  jetton_wallet_code balance jetton_amount response_address custom_payload owner_address jetton_master_address query_id _44 _45
+    32 STU	//  jetton_wallet_code balance jetton_amount response_address custom_payload owner_address jetton_master_address query_id _47
+    64 STU	//  jetton_wallet_code balance jetton_amount response_address custom_payload owner_address jetton_master_address _49
+    s0 s5 XCHG2	//  jetton_wallet_code balance jetton_master_address response_address custom_payload owner_address _49 jetton_amount
+    STVARUINT16	//  jetton_wallet_code balance jetton_master_address response_address custom_payload owner_address _50
+    OVER	//  jetton_wallet_code balance jetton_master_address response_address custom_payload owner_address _50 owner_address
+    STSLICER	//  jetton_wallet_code balance jetton_master_address response_address custom_payload owner_address _51
+    s0 s3 XCHG2	//  jetton_wallet_code balance jetton_master_address owner_address custom_payload _51 response_address
+    STSLICER	//  jetton_wallet_code balance jetton_master_address owner_address custom_payload _52
+    STOPTREF	//  jetton_wallet_code balance jetton_master_address owner_address _53
+    ENDC	//  jetton_wallet_code balance jetton_master_address owner_address burn_notification_body
+    1 PUSHINT	//  jetton_wallet_code balance jetton_master_address owner_address burn_notification_body _56=1
+    24 PUSHINT	//  jetton_wallet_code balance jetton_master_address owner_address burn_notification_body _56=1 _57=24
+    NEWC	//  jetton_wallet_code balance jetton_master_address owner_address burn_notification_body _56=1 _57=24 _58
+    6 STU	//  jetton_wallet_code balance jetton_master_address owner_address burn_notification_body _56=1 _60
+    s4 PUSH	//  jetton_wallet_code balance jetton_master_address owner_address burn_notification_body _56=1 _60 jetton_master_address
+    STSLICER	//  jetton_wallet_code balance jetton_master_address owner_address burn_notification_body _56=1 _61
+    0 PUSHINT	//  jetton_wallet_code balance jetton_master_address owner_address burn_notification_body _56=1 _61 _62=0
+    STVARUINT16	//  jetton_wallet_code balance jetton_master_address owner_address burn_notification_body _56=1 _63
+    107 STU	//  jetton_wallet_code balance jetton_master_address owner_address burn_notification_body _77
+    STREF	//  jetton_wallet_code balance jetton_master_address owner_address _78
+    ENDC	//  jetton_wallet_code balance jetton_master_address owner_address burn_notification_message
+    64 PUSHINT	//  jetton_wallet_code balance jetton_master_address owner_address burn_notification_message _80=64
     SENDRAWMSG
     s0 s1 s3 XCHG3	//  balance owner_address jetton_master_address jetton_wallet_code
     save_data INLINECALLDICT

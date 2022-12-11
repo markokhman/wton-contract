@@ -36,7 +36,7 @@ nanocoins$_ _:Grams = Coins;
 ///
 
 //
-// TEP-74
+// TEP-74 (Basic)
 //
 
 transfer#0f8a7ea5 query_id:uint64 amount:(VarUInteger 16) destination:MsgAddress
@@ -54,6 +54,10 @@ burn#595f07bc query_id:uint64 amount:(VarUInteger 16)
               response_destination:MsgAddress custom_payload:(Maybe ^Cell)
               = InternalMsgBody;
 
+//
+// Out of TEP-74 scope (but recommended)
+//
+
 internal_transfer#178d4519 query_id:uint64 amount:(VarUInteger 16) from:MsgAddress
                            response_address:MsgAddress
                            forward_ton_amount:(VarUInteger 16)
@@ -65,7 +69,7 @@ burn_notification#7bdd97de query_id:uint64 amount:(VarUInteger 16)
                            = InternalMsgBody;
 
 //
-// TEP-89
+// TEP-89 (Discoverable)
 //
 
 provide_wallet_address#2c76b973 query_id:uint64 owner_address:MsgAddress
@@ -78,7 +82,11 @@ take_wallet_address#d1735400 query_id:uint64 wallet_address:MsgAddress
 // TEP-xx - WTON (Wrapped TON)
 //
 
-mint#cab9fcfb query_id:uint64 amount:Coins recipient:MsgAddress forward_amount:Coins
-              forward_payload:(Maybe ^Cell) response_destination:MsgAddress = InternalMsgBody;
+burn_notification_ext#84106950 query_id:uint64 amount:(VarUInteger 16)
+                           sender:MsgAddress response_destination:MsgAddress
+                           custom_payload:(Maybe ^Cell) = InternalMsgBody;
+
+mint#864e0716 query_id:uint64 amount:Coins recipient:MsgAddress forward_amount:Coins
+              forward_payload:(Maybe ^Cell) return_excesses_to:MsgAddress = InternalMsgBody;
 
 release#71c6af6b query_id:uint64 custom_payload:(Maybe ^Cell) = InternalMsgBody;

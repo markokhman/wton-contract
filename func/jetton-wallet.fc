@@ -1,17 +1,5 @@
 ;; Jetton Wallet Smart Contract
 
-{-
-
-NOTE that this tokens can be transferred within the same workchain.
-
-This is suitable for most tokens, if you need tokens transferable between workchains there are two solutions:
-
-1) use more expensive but universal function to calculate message forward fee for arbitrary destination (see `misc/forward-fee-calc.cs`)
-
-2) use token holder proxies in target workchain (that way even 'non-universal' token can be used from any workchain)
-
--}
-
 int min_tons_for_storage() asm "10000000 PUSHINT"; ;; 0.01 TON
 int gas_consumption() asm "10000000 PUSHINT"; ;; 0.01 TON
 
@@ -161,29 +149,32 @@ int gas_consumption() asm "10000000 PUSHINT"; ;; 0.01 TON
   int query_id = in_msg_body~load_uint(64);
   int jetton_amount = in_msg_body~load_coins();
   slice response_address = in_msg_body~load_msg_addr();
-  ;; ignore custom payload
-  ;; slice custom_payload = in_msg_body~load_dict();
+  cell custom_payload = in_msg_body~load_maybe_ref();
+
   balance -= jetton_amount;
   throw_unless(705, equal_slices(owner_address, sender_address));
   throw_unless(706, balance >= 0);
-  throw_unless(707, msg_value > fwd_fee + 2 * gas_consumption());
+  throw_unless(707, msg_value > 2 * fwd_fee + 2 * gas_consumption());
+  throw_unless(710, response_address.preload_uint(2));
 
-  var msg_body = begin_cell()
-      .store_uint(op::burn_notification(), 32)
+  cell burn_notification_body = begin_cell()
+      .store_uint(op::burn_notification_ext(), 32)
       .store_uint(query_id, 64)
       .store_coins(jetton_amount)
       .store_slice(owner_address)
       .store_slice(response_address)
+      .store_maybe_ref(custom_payload)
       .end_cell();
 
-  var msg = begin_cell()
+  cell burn_notification_message = begin_cell()
     .store_uint(0x18, 6)
     .store_slice(jetton_master_address)
     .store_coins(0)
     .store_uint(1, 1 + 4 + 4 + 64 + 32 + 1 + 1)
-    .store_ref(msg_body);
+    .store_ref(burn_notification_body)
+    .end_cell();
 
-  send_raw_message(msg.end_cell(), 64);
+  send_raw_message(burn_notification_message, 64);
 
   save_data(balance, owner_address, jetton_master_address, jetton_wallet_code);
 }
