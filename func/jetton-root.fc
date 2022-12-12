@@ -27,13 +27,13 @@ slice null_address() asm "b{00} PUSHSLICE";
 }
 
 cell internal_transfer::build_message(cell body, int amount, slice recipient, cell jetton_wallet_code) inline {
-    cell state_init = calculate_jetton_wallet_state_init(recipient, my_address(), jetton_wallet_code);
-    slice recipient_wallet_address = calculate_jetton_wallet_address(state_init);
+    cell state_init = jetton_wallet:create_state_init(recipient, my_address(), jetton_wallet_code);
+    slice recipient_wallet_address = calculate_contract_address(state_init);
 
     return begin_cell()
-            .store_uint(0x18, 6)
+            .store_uint(msg_flag:bounceable(), 6)
             .store_slice(recipient_wallet_address)
-            .store_coins(amount)
+            .store_coins(0)
             .store_uint(4 + 2 + 1, 1 + 4 + 4 + 64 + 32 + 1 + 1 + 1)
             .store_ref(state_init)
             .store_ref(body)
@@ -65,6 +65,8 @@ cell internal_transfer::build_message(cell body, int amount, slice recipient, ce
     if (op == op::mint()) {
         int amount = in_msg_body~load_coins();
         slice recipient = in_msg_body~load_msg_addr();
+        force_chain(recipient);
+
         int forward_amount = in_msg_body~load_coins();
         cell forward_payload = in_msg_body~load_maybe_ref();
         slice return_excesses_to = in_msg_body~load_msg_addr();
@@ -84,7 +86,11 @@ cell internal_transfer::build_message(cell body, int amount, slice recipient, ce
                 .store_maybe_ref(forward_payload)
                 .end_cell();
 
-        send_raw_message(internal_transfer::build_message(internal_transfer_body, amount, recipient, jetton_wallet_code), 128);
+        send_raw_message(
+                internal_transfer::build_message(internal_transfer_body, amount, recipient, jetton_wallet_code),
+                send_mode:all_not_reserved()
+        );
+
         save_data(total_supply, content, jetton_wallet_code);
         return ();
     }
@@ -93,7 +99,7 @@ cell internal_transfer::build_message(cell body, int amount, slice recipient, ce
         int amount = in_msg_body~load_coins();
         slice wallet_owner = in_msg_body~load_msg_addr();
 
-        slice expected_wallet_address = calculate_user_jetton_wallet_address(wallet_owner, my_address(), jetton_wallet_code);
+        slice expected_wallet_address = jetton_wallet:calculate_address(wallet_owner, my_address(), jetton_wallet_code);
         throw_unless(74, equal_slices(expected_wallet_address, sender_address));
 
         total_supply -= amount;
@@ -105,7 +111,7 @@ cell internal_transfer::build_message(cell body, int amount, slice recipient, ce
         cell custom_payload = in_msg_body~load_maybe_ref();
 
         cell excesses_message = begin_cell()
-                .store_uint(0x10, 6) ;; nobounce - int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool src:MsgAddress -> 011000
+                .store_uint(msg_flag:non_bounceable(), 6) ;; nobounce - int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool src:MsgAddress -> 011000
                 .store_slice(recipient)
                 .store_coins(0)
                 .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
@@ -114,7 +120,7 @@ cell internal_transfer::build_message(cell body, int amount, slice recipient, ce
                 .store_maybe_ref(custom_payload)
                 .end_cell();
 
-        send_raw_message(excesses_message, 128);
+        send_raw_message(excesses_message, send_mode:all_not_reserved());
         return ();
     }
 
@@ -128,8 +134,8 @@ cell internal_transfer::build_message(cell body, int amount, slice recipient, ce
                 ? begin_cell().store_slice(owner_address).end_cell()
                 : null();
 
-        var msg = begin_cell()
-                .store_uint(0x18, 6)
+        builder msg = begin_cell()
+                .store_uint(msg_flag:bounceable(), 6)
                 .store_slice(sender_address)
                 .store_coins(0)
                 .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
@@ -137,11 +143,12 @@ cell internal_transfer::build_message(cell body, int amount, slice recipient, ce
                 .store_uint(query_id, 64);
 
         if (is_resolvable?(owner_address)) {
-            msg = msg.store_slice(calculate_user_jetton_wallet_address(owner_address, my_address(), jetton_wallet_code));
+            msg = msg.store_slice(jetton_wallet:calculate_address(owner_address, my_address(), jetton_wallet_code));
         } else {
             msg = msg.store_uint(0, 2); ;; addr_none
         }
-        send_raw_message(msg.store_maybe_ref(included_address).end_cell(), 64);
+
+        send_raw_message(msg.store_maybe_ref(included_address).end_cell(), send_mode:remaining_gas());
         return ();
     }
 
@@ -155,5 +162,5 @@ cell internal_transfer::build_message(cell body, int amount, slice recipient, ce
 
 slice get_wallet_address(slice owner_address) method_id {
     (int total_supply, cell content, cell jetton_wallet_code) = load_data();
-    return calculate_user_jetton_wallet_address(owner_address, my_address(), jetton_wallet_code);
+    return jetton_wallet:calculate_address(owner_address, my_address(), jetton_wallet_code);
 }

@@ -1,0 +1,9 @@
+;; message flags
+int msg_flag:bounceable() asm "0x18 PUSHINT";
+int msg_flag:non_bounceable() asm "0x10 PUSHINT";
+
+;; send_raw_message modes
+int send_mode:sender_pays_fees() asm "1 PUSHINT";
+int send_mode:ignore_errors() asm "2 PUSHINT";
+int send_mode:remaining_gas() asm "64 PUSHINT";
+int send_mode:all_not_reserved() asm "128 PUSHINT";

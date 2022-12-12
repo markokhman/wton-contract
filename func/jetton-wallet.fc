@@ -14,7 +14,7 @@ int gas_consumption() asm "10000000 PUSHINT"; ;; 0.01 TON
 }
 
 () save_data (int balance, slice owner_address, slice jetton_master_address, cell jetton_wallet_code) impure inline {
-  set_data(pack_jetton_wallet_data(balance, owner_address, jetton_master_address, jetton_wallet_code));
+  set_data(jetton_wallet:pack_storage(balance, owner_address, jetton_master_address, jetton_wallet_code));
 }
 
 {-
@@ -40,15 +40,15 @@ int gas_consumption() asm "10000000 PUSHINT"; ;; 0.01 TON
   throw_unless(705, equal_slices(owner_address, sender_address));
   throw_unless(706, balance >= 0);
 
-  cell state_init = calculate_jetton_wallet_state_init(to_owner_address, jetton_master_address, jetton_wallet_code);
-  slice to_wallet_address = calculate_jetton_wallet_address(state_init);
+  cell state_init = jetton_wallet:create_state_init(to_owner_address, jetton_master_address, jetton_wallet_code);
+  slice to_wallet_address = calculate_contract_address(state_init);
   slice response_address = in_msg_body~load_msg_addr();
   cell custom_payload = in_msg_body~load_dict();
   int forward_ton_amount = in_msg_body~load_coins();
   throw_unless(708, slice_bits(in_msg_body) >= 1);
   slice either_forward_payload = in_msg_body;
   var msg = begin_cell()
-    .store_uint(0x18, 6)
+    .store_uint(msg_flag:bounceable(), 6)
     .store_slice(to_wallet_address)
     .store_coins(0)
     .store_uint(4 + 2 + 1, 1 + 4 + 4 + 64 + 32 + 1 + 1 + 1)
@@ -75,7 +75,7 @@ int gas_consumption() asm "10000000 PUSHINT"; ;; 0.01 TON
                      ;; by using this instead of fwd_fee
                      ;; msg_fwd_fee(to_wallet, msg_body, state_init, 15)
 
-  send_raw_message(msg.end_cell(), 64); ;; revert on errors
+  send_raw_message(msg.end_cell(), send_mode:remaining_gas()); ;; revert on errors
   save_data(balance, owner_address, jetton_master_address, jetton_wallet_code);
 }
 
@@ -99,7 +99,7 @@ int gas_consumption() asm "10000000 PUSHINT"; ;; 0.01 TON
   throw_unless(707,
       equal_slices(jetton_master_address, sender_address)
       |
-      equal_slices(calculate_user_jetton_wallet_address(from_address, jetton_master_address, jetton_wallet_code), sender_address)
+      equal_slices(jetton_wallet:calculate_address(from_address, jetton_master_address, jetton_wallet_code), sender_address)
   );
   int forward_ton_amount = in_msg_body~load_coins();
 
@@ -119,24 +119,24 @@ int gas_consumption() asm "10000000 PUSHINT"; ;; 0.01 TON
         .end_cell();
 
     var msg = begin_cell()
-      .store_uint(0x10, 6) ;; we should not bounce here cause receiver can have uninitialized contract
+      .store_uint(msg_flag:non_bounceable(), 6) ;; we should not bounce here cause receiver can have uninitialized contract
       .store_slice(owner_address)
       .store_coins(forward_ton_amount)
       .store_uint(1, 1 + 4 + 4 + 64 + 32 + 1 + 1)
       .store_ref(msg_body);
 
-    send_raw_message(msg.end_cell(), 1);
+    send_raw_message(msg.end_cell(), send_mode:sender_pays_fees());
   }
 
   if ((response_address.preload_uint(2) != 0) & (msg_value > 0)) {
     var msg = begin_cell()
-      .store_uint(0x10, 6) ;; nobounce - int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool src:MsgAddress -> 010000
+      .store_uint(msg_flag:non_bounceable(), 6) ;; nobounce - int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool src:MsgAddress -> 010000
       .store_slice(response_address)
       .store_coins(msg_value)
       .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
       .store_uint(op::excesses(), 32)
       .store_uint(query_id, 64);
-    send_raw_message(msg.end_cell(), 2);
+    send_raw_message(msg.end_cell(), send_mode:ignore_errors());
   }
 
   save_data(balance, owner_address, jetton_master_address, jetton_wallet_code);
@@ -167,14 +167,14 @@ int gas_consumption() asm "10000000 PUSHINT"; ;; 0.01 TON
       .end_cell();
 
   cell burn_notification_message = begin_cell()
-    .store_uint(0x18, 6)
+    .store_uint(msg_flag:bounceable(), 6)
     .store_slice(jetton_master_address)
     .store_coins(0)
     .store_uint(1, 1 + 4 + 4 + 64 + 32 + 1 + 1)
     .store_ref(burn_notification_body)
     .end_cell();
 
-  send_raw_message(burn_notification_message, 64);
+  send_raw_message(burn_notification_message, send_mode:remaining_gas());
 
   save_data(balance, owner_address, jetton_master_address, jetton_wallet_code);
 }

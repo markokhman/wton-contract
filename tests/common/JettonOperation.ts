@@ -1,0 +1,19 @@
+export enum JettonOperation {
+  // Basic
+  TRANSFER_NOTIFICATION = 0x7362d09c,
+  TRANSFER = 0xf8a7ea5,
+  EXCESSES = 0xd53276db,
+  BURN = 0x595f07bc,
+
+  INTERNAL_TRANSFER = 0x178d4519,
+  BURN_NOTIFICATION = 0x7bdd97de,
+
+  // Discovery Minter
+  PROVIDE_WALLET_ADDRESS = 0x2c76b973,
+  TAKE_WALLET_ADDRESS = 0xd1735400,
+
+  // Wrapped TON
+  BURN_NOTIFICATION_EXT = 0x84106950,
+  MINT = 0x864e0716,
+  RELEASE = 0x71c6af6b,
+}

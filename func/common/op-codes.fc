@@ -14,8 +14,3 @@ int op::take_wallet_address() asm "0xd1735400 PUSHINT";
 int op::mint() asm "0x864e0716 PUSHINT";
 int op::release() asm "0x71c6af6b PUSHINT";
 
-int is_resolvable?(slice addr) inline {
-    (int wc, _) = parse_std_addr(addr);
-
-    return wc == workchain();
-}
