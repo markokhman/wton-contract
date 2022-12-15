@@ -1,4 +1,4 @@
-import { Builder, Cell, Coins } from "ton3-core";
+import { BOC, Builder, Cell, Coins } from "ton3-core";
 import { Emulator, matchers } from "@tonkite/vm";
 import { globalConfig } from "./common/globalConfig";
 import { JettonOperation } from "./common/JettonOperation";
@@ -11,7 +11,7 @@ import { generateAddress } from "./common/generateAddress";
 expect.extend(matchers);
 
 describe("jetton_wallet", () => {
-  const ROOT_ADDRESS = generateAddress();
+  const MINTER_ADDRESS = generateAddress();
   const OWNER_ADDRESS = generateAddress();
 
   let emulator: Emulator;
@@ -28,7 +28,7 @@ describe("jetton_wallet", () => {
       data: new Builder()
         .storeCoins(new Coins(1000)) // balance.
         .storeAddress(OWNER_ADDRESS) // owner_address
-        .storeAddress(ROOT_ADDRESS) // jetton_master_address
+        .storeAddress(MINTER_ADDRESS) // jetton_master_address
         .storeRef(WALLET_CODE) // jetton_wallet_code
         .cell(),
       balance: new Coins(0.1),
@@ -112,7 +112,7 @@ describe("jetton_wallet", () => {
         burnNotificationMessage.body
       );
 
-      expect(burnNotificationMessage.info.dest).toEqual(ROOT_ADDRESS);
+      expect(burnNotificationMessage.info.dest).toEqual(MINTER_ADDRESS);
       expect(burnNotificationBody).toEqual({
         operation: JettonOperation.BURN_NOTIFICATION_EXT,
         queryId: QUERY_ID,

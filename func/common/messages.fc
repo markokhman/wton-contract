@@ -1,5 +1,7 @@
 ;; message flags
 int msg_flag:bounceable() asm "0x18 PUSHINT";
+
+;; int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool src:MsgAddress -> 011000
 int msg_flag:non_bounceable() asm "0x10 PUSHINT";
 
 ;; send_raw_message modes

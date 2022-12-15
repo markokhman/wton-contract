@@ -1,23 +1,21 @@
 {
-  "name": "token-contract",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
   "scripts": {
+    "codegen": "ts-node scripts/generate-func.ts",
     "test": "jest"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
+    "@aws-crypto/sha256-js": "^2.0.2",
     "@tonkite/types": "0.0.3",
     "@tonkite/vm": "0.0.3",
     "@tsconfig/node18": "^1.0.1",
     "@types/jest": "^29.2.4",
     "@types/node": "^18.11.13",
+    "datauri": "^4.1.0",
     "jest": "^29.3.1",
     "ton3-core": "^0.0.19",
     "ts-jest": "^29.0.3",
+    "ts-node": "^10.9.1",
     "typescript": "^4.9.4"
   }
 }

@@ -130,7 +130,7 @@ int gas_consumption() asm "10000000 PUSHINT"; ;; 0.01 TON
 
   if ((response_address.preload_uint(2) != 0) & (msg_value > 0)) {
     var msg = begin_cell()
-      .store_uint(msg_flag:non_bounceable(), 6) ;; nobounce - int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool src:MsgAddress -> 010000
+      .store_uint(msg_flag:non_bounceable(), 6)
       .store_slice(response_address)
       .store_coins(msg_value)
       .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
@@ -154,7 +154,7 @@ int gas_consumption() asm "10000000 PUSHINT"; ;; 0.01 TON
   balance -= jetton_amount;
   throw_unless(705, equal_slices(owner_address, sender_address));
   throw_unless(706, balance >= 0);
-  throw_unless(707, msg_value > 2 * fwd_fee + 2 * gas_consumption());
+  throw_unless(707, msg_value > 2 * (fwd_fee + gas_consumption()));
   throw_unless(710, response_address.preload_uint(2));
 
   cell burn_notification_body = begin_cell()
@@ -206,7 +206,7 @@ int gas_consumption() asm "10000000 PUSHINT"; ;; 0.01 TON
   cs~load_coins(); ;; skip value
   cs~skip_bits(1); ;; skip extracurrency collection
   cs~load_coins(); ;; skip ihr_fee
-  int fwd_fee = cs~load_coins(); ;; we use message fwd_fee for estimation of forward_payload costs
+  int fwd_fee = muldiv(cs~load_coins(), 3, 2); ;; we use message fwd_fee for estimation of forward_payload costs
 
   int op = in_msg_body~load_uint(32);
 

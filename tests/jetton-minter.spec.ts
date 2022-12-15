@@ -4,7 +4,7 @@ import { Emulator, matchers } from "@tonkite/vm";
 import { JettonOperation } from "./common/JettonOperation";
 import { parseInternalTransferBody } from "./common/parsers/parseInternalTransferBody";
 import { parseReleaseBody } from "./common/parsers/parseReleaseBody";
-import { ROOT_CODE, WALLET_CODE } from "./common/contracts";
+import { MINTER_CODE, WALLET_CODE } from "./common/contracts";
 import { packShardAccount } from "./common/packers/packShardAccount";
 import { packInternalMessage } from "./common/packers/packInternalMessage";
 import { generateAddress } from "./common/generateAddress";
@@ -12,27 +12,22 @@ import { generateAddress } from "./common/generateAddress";
 expect.extend(matchers);
 
 describe("jetton_minter", () => {
-  const ROOT_ADDRESS = generateAddress();
+  const MINTER_ADDRESS = generateAddress();
   const MIN_BALANCE = new Coins(0.01);
   const INITIAL_SUPPLY = new Coins(10);
 
   let emulator: Emulator;
-  let jettonRootAccount: Cell;
+  let minterAccount: Cell;
 
   beforeAll(() => {
     emulator = new Emulator(globalConfig, null);
   });
 
   beforeEach(() => {
-    jettonRootAccount = packShardAccount({
-      address: ROOT_ADDRESS,
-      code: ROOT_CODE,
-      data: new Builder()
-        .storeCoins(INITIAL_SUPPLY) // total_supply
-        // TODO: Implement on-chain content packer.
-        .storeRef(new Builder().cell()) // content
-        .storeRef(WALLET_CODE) // jetton_wallet_code
-        .cell(),
+    minterAccount = packShardAccount({
+      address: MINTER_ADDRESS,
+      code: MINTER_CODE,
+      data: new Builder().storeCoins(INITIAL_SUPPLY).cell(),
       balance: new Coins(MIN_BALANCE).add(INITIAL_SUPPLY),
     });
   });
@@ -44,7 +39,7 @@ describe("jetton_minter", () => {
       const RECIPIENT = generateAddress();
 
       const { transaction } = await emulator.emulateTransaction(
-        jettonRootAccount,
+        minterAccount,
         packInternalMessage({
           value: new Coins(1), // 1 < 1 + 0.015 + 0.1
           body: new Builder()
@@ -77,14 +72,14 @@ describe("jetton_minter", () => {
 
       const RECIPIENT_WALLET = (
         await emulator.runGetMethod<[Slice]>(
-          jettonRootAccount,
+          minterAccount,
           "get_wallet_address",
           [Slice.parse(new Builder().storeAddress(RECIPIENT).cell())]
         )
       )[0].loadAddress()!;
 
       const { transaction, shardAccount } = await emulator.emulateTransaction(
-        jettonRootAccount,
+        minterAccount,
         packInternalMessage({
           value: new Coins(AMOUNT).add(GAS_FEE).add(FORWARD_AMOUNT), // 1 + 0.015 + 0.1
           body: new Builder()
@@ -115,7 +110,7 @@ describe("jetton_minter", () => {
         operation: JettonOperation.INTERNAL_TRANSFER,
         queryId: QUERY_ID,
         amount: AMOUNT,
-        from: ROOT_ADDRESS,
+        from: MINTER_ADDRESS,
         responseAddress: RESPONSE_DESTINATION,
         forwardAmount: FORWARD_AMOUNT,
         forwardPayload: FORWARD_PAYLOAD,
@@ -137,14 +132,14 @@ describe("jetton_minter", () => {
 
       const WALLET = (
         await emulator.runGetMethod<[Slice]>(
-          jettonRootAccount,
+          minterAccount,
           "get_wallet_address",
           [Slice.parse(new Builder().storeAddress(WALLET_OWNER).cell())]
         )
       )[0].loadAddress()!;
 
       const { transaction } = await emulator.emulateTransaction(
-        jettonRootAccount,
+        minterAccount,
         packInternalMessage({
           value: new Coins(0.1),
           src: WALLET,
@@ -171,6 +166,18 @@ describe("jetton_minter", () => {
         queryId: QUERY_ID,
         customPayload: CUSTOM_PAYLOAD,
       });
+    });
+  });
+
+  describe("get_jetton_data", () => {
+    test("should return on-chain content", async () => {
+      // int, int, slice, cell, cell
+      const result = await emulator.runGetMethod<
+        [bigint, bigint, Slice, Cell, Cell]
+      >(minterAccount, "get_jetton_data");
+
+      expect(result).toHaveLength(5);
+      expect(result[4].hash()).toEqual(WALLET_CODE.hash());
     });
   });
 });
