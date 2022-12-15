@@ -2,11 +2,6 @@
 int minimal_balance() asm "10000000 PUSHINT"; ;; 0.01 TON
 int gas_consumption() asm "10000000 PUSHINT";
 
-;; mint
-;; gasFees: 8120000
-;; totalForwardFees: 10775000
-;; totalActionFees: 3591611
-
 ;; addr_none$00 = MsgAddressExt;
 slice null_address() asm "b{00} PUSHSLICE";
 

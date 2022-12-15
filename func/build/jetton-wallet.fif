@@ -345,7 +345,7 @@ PROGRAM{
     0x178d4519 PUSHINT	//  jetton_wallet_code balance owner_address jetton_master_address op in_msg_body _14
     s2 s(-1) PUXC	//  jetton_wallet_code balance owner_address jetton_master_address op in_msg_body op _14
     EQUAL	//  jetton_wallet_code balance owner_address jetton_master_address op in_msg_body _15
-    0x7bdd97de PUSHINT	//  jetton_wallet_code balance owner_address jetton_master_address op in_msg_body _15 _16
+    0x84106950 PUSHINT	//  jetton_wallet_code balance owner_address jetton_master_address op in_msg_body _15 _16
     s1 s3 XCHG	//  jetton_wallet_code balance owner_address jetton_master_address _15 in_msg_body op _16
     EQUAL	//  jetton_wallet_code balance owner_address jetton_master_address _15 in_msg_body _17
     s1 s2 XCHG	//  jetton_wallet_code balance owner_address jetton_master_address in_msg_body _15 _17

@@ -183,7 +183,7 @@ int gas_consumption() asm "10000000 PUSHINT"; ;; 0.01 TON
   in_msg_body~skip_bits(32); ;; 0xFFFFFFFF
   (int balance, slice owner_address, slice jetton_master_address, cell jetton_wallet_code) = load_data();
   int op = in_msg_body~load_uint(32);
-  throw_unless(709, (op == op::internal_transfer()) | (op == op::burn_notification()));
+  throw_unless(709, (op == op::internal_transfer()) | (op == op::burn_notification_ext()));
   int query_id = in_msg_body~load_uint(64);
   int jetton_amount = in_msg_body~load_coins();
   balance += jetton_amount;
